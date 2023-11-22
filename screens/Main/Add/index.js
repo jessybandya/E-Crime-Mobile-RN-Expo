@@ -4,7 +4,7 @@ import { ActivityIndicator, Alert, Modal, Image } from "react-native";
 import { Button as ButtonRN } from "react-native";
 import { TextInput } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
+import {Picker} from '@react-native-picker/picker';
 import { Button } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -13,6 +13,7 @@ import { auth, collection, db, doc, setDoc, storage } from "../../../firebase";
 import { Video, ResizeMode } from "expo-av";
 import * as Location from "expo-location";
 import { ALERT_TYPE, Toast, Dialog } from "react-native-alert-notification";
+
 
 export default function Add({ navigation }) {
   const [title, setTitle] = useState("");
@@ -29,6 +30,7 @@ export default function Add({ navigation }) {
   const video = useRef(null);
   const [status, setStatus] = useState({});
   const [progress, setProgress] = useState(0);
+  const [getLocation, setGetLocation] = useState(false);
 
   async function pickImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -182,7 +184,9 @@ export default function Add({ navigation }) {
     if (status !== "granted") {
       Alert.alert("Permission to access location was denied");
     } else {
+      setGetLocation(true)
       try {
+        setGetLocation(true)
         let { coords } = await Location?.getCurrentPositionAsync({});
 
         // Extract latitude and longitude from coords
@@ -196,10 +200,12 @@ export default function Add({ navigation }) {
           textBody: "Crime Location taken successfully!",
           button: "close",
         });
+        setGetLocation(false)
 
         // You can use latitude and longitude as needed in your application
       } catch (error) {
         Alert.alert(error.message);
+        setGetLocation(false)
       }
     }
   };
@@ -253,14 +259,16 @@ export default function Add({ navigation }) {
             borderRadius: 8,
           }}
         >
-          <RNPickerSelect
-            onValueChange={(value) => setCategory(value)}
-            items={[
-              { label: "Category A", value: "Category A" },
-              { label: "Category B", value: "Category B" },
-              { label: "Category C", value: "Category C" },
-            ]}
-          />
+        <Picker
+  selectedValue={category}
+  onValueChange={(itemValue, itemIndex) =>
+    setCategory(itemValue)
+  }>
+  <Picker.Item style={{color:'#88888888'}} label="Select Category" value="" />
+  <Picker.Item label="Category A" value="Category A" />
+  <Picker.Item label="Category B" value="Category B" />
+  <Picker.Item label="Category C" value="Category C" />
+</Picker>
         </View>
 
         <View style={{ margin: 10, marginTop: 10 }}>
@@ -398,6 +406,20 @@ export default function Add({ navigation }) {
             </Button>
           </View>
         </Modal>
+
+        <Modal
+        transparent={true}
+        animationType={"none"}
+        visible={getLocation}
+        onRequestClose={() => setGetLocation(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.activityIndicatorWrapper}>
+            <Text>Getting Location...</Text>
+            <ActivityIndicator size={30} animating={getLocation} />
+          </View>
+        </View>
+      </Modal>
 
         <Modal
           transparent={true}
