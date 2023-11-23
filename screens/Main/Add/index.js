@@ -148,6 +148,7 @@ export default function Add({ navigation }) {
           category,
           lat,
           long,
+          visibility: false,
           timestamp: Date.now(),
           status: "pending",
           fromId: auth?.currentUser?.uid,
@@ -156,10 +157,10 @@ export default function Add({ navigation }) {
         Dialog.show({
           type: ALERT_TYPE.SUCCESS,
           title: "Success",
-          textBody: "Crime posted successfully!",
+          textBody: "Crime posted successfully! Wait for approval from Admin to be visible in the trending page.",
           button: "close",
         });
-        navigation.navigate("Feed");
+        navigation.navigate("Profile");
         setTitle(""),
           setDescription(""),
           setCategory(""),
@@ -184,7 +185,6 @@ export default function Add({ navigation }) {
     if (status !== "granted") {
       Alert.alert("Permission to access location was denied");
     } else {
-      setGetLocation(true)
       try {
         setGetLocation(true)
         let { coords } = await Location?.getCurrentPositionAsync({});

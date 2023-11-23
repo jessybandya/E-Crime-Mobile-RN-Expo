@@ -7,6 +7,7 @@ import { query, collection, where, onSnapshot, doc } from "firebase/firestore";
 import { updateAuthId } from "../../../redux/dataSlice";
 import { useDispatch } from "react-redux";
 import { db, auth } from "../../../firebase";
+import Home from "./Home";
 
 export default function Profile({ navigation }) {
   const dispatch = useDispatch();
@@ -100,25 +101,28 @@ export default function Profile({ navigation }) {
 
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
         showsVerticalScrollIndicator={false}
       >
-        <TouchableOpacity activeOpacity={0.5} onPress={() => setModal(true)}>
-          <Image
-            source={{ uri: profileUserData?.profilePhoto }}
-            style={styles.userImg}
-          />
-        </TouchableOpacity>
+       <View
+       style={{
+          alignItems: "center",
+          justifyContent: "center",
+       }}
+       >
+       <TouchableOpacity activeOpacity={0.5} onPress={() => setModal(true)}>
+       <Image
+         source={{ uri: profileUserData?.profilePhoto }}
+         style={styles.userImg}
+       />
+     </TouchableOpacity>
 
-        <Text style={styles.userName}>
-          {profileUserData?.firstName} {profileUserData?.lastName}
-        </Text>
-        <Text style={styles.aboutUser}>
-          {profileUserData ? profileUserData?.email || "No email added." : ""}
-        </Text>
+     <Text style={styles.userName}>
+       {profileUserData?.firstName} {profileUserData?.lastName}
+     </Text>
+     <Text style={styles.aboutUser}>
+       {profileUserData ? profileUserData?.email || "No email added." : ""}
+     </Text>
+       </View>
 
         <View style={styles.userInfoWrapper}>
           <View style={styles.userInfoItem}>
@@ -144,6 +148,21 @@ export default function Profile({ navigation }) {
             <Text style={styles.userBtnTxt}>Logout</Text>
           </TouchableOpacity>
         </View>
+        <View 
+        style={{
+          borderColor: "#88888888",
+          borderWidth: 1,
+          width: "100%",
+          marginTop: 15,
+        }}
+        />
+        <View><Text style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          textAlign: "center",
+          color: "#0a7ff5",
+        }}>My Post</Text></View>
+        <Home navigation={navigation}/>
       </ScrollView>
     </>
   );
@@ -163,7 +182,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 20,
+    paddingTop:10
   },
   userImg: {
     height: 150,

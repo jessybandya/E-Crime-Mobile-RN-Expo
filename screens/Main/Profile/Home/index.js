@@ -6,7 +6,7 @@ import {
   doc,
   onSnapshot,
   query,
-} from "../../../firebase";
+} from "../../../../firebase";
 import { Image } from "react-native-elements";
 import { Feather } from "@expo/vector-icons";
 import {
@@ -46,7 +46,7 @@ export default function Home({ navigation }) {
       try {
         setLoading(true);
 
-        const q = query(collection(db, "crimes"),where('visibility', '==', true), orderBy("timestamp", "desc"));
+        const q = query(collection(db, "crimes"),where("fromId", "==", `${auth?.currentUser?.uid}`), orderBy("timestamp", "desc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
           const postData = snapshot.docs.map((doc) => ({
             id: doc.id,
@@ -67,36 +67,11 @@ export default function Home({ navigation }) {
   }, []);
 
   return (
-    <>
-      <View style={styles.header}>
-        <TouchableOpacity
-          activeOpacity={0.4}
-          onPress={() => navigation.navigate("Profile")}
+        <ScrollView
+        style={{
+          paddingBottom:90
+        }}
         >
-          <Image
-            source={{ uri: profileUserData?.profilePhoto }}
-            style={styles.avatar}
-          ></Image>
-        </TouchableOpacity>
-        <View>
-          <View>
-            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 17 }}>
-              Home
-            </Text>
-          </View>
-        </View>
-        <View>
-          <TouchableOpacity
-            activeOpacity={0.4}
-            onPress={() => navigation.navigate("Search")}
-          >
-            <Feather name="search" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.feedContainer}>
-        <ScrollView>
           {posts.length > 0 ? (
             posts.map(
               ({
@@ -135,8 +110,6 @@ export default function Home({ navigation }) {
             </View>
           )}
         </ScrollView>
-      </View>
-    </>
   );
 }
 
@@ -161,10 +134,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 24,
-  },
-  feedContainer: {
-    borderBottomColor: "pink",
-    paddingBottom: 160,
   },
   container1: {
     marginTop: "50%",

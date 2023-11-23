@@ -24,7 +24,7 @@
       },
       "config" : {
         "googleMaps": {
-          "apiKey": "api key for production Map View"
+          "apiKey": "API KEY HERE FOR MOBILE MAP IN PRODUCTION"
         }
       },
       "package": "com.jaby.jaby"
